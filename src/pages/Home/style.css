@@ -185,4 +185,7 @@ background-color: #b6dafb;
     .AskQuestions{
         width: 90%;
     }
+    .Genrative-button{
+        padding: 5px;
+    }
   }
