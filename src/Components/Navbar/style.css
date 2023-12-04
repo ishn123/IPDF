@@ -1,0 +1,106 @@
+.Navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #252526;
+    position: fixed;
+    z-index: 1;
+}
+
+.Navbar>h1 {
+    color: whitesmoke;
+    margin: 2px;
+    padding: 4px;
+}
+
+.Profile-container {
+    padding: 10px;
+}
+
+.badge {
+    width: 20px;
+    height: 19px;
+    background-color: #0075ffc2;
+    border-radius: 50%;
+    color: white;
+    position: absolute;
+    top: -6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    right: 0px;
+
+}
+
+.Notification-Card {
+    padding: 10px;
+    height: fit-content;
+    width: 100%;
+    border: solid 1px #0000004d;
+    border-radius: 6px;
+    font-weight: 550;
+}
+
+.NotificationIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-radius: 20px;
+    background: #3e3e42;
+}
+
+.Search {
+    color: #667185;
+    font-feature-settings: 'cv04' on, 'cv03' on;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    width: 100%;
+    border: none;
+    line-height: 145%;
+}
+
+.Nav-items {
+    display: flex;
+    padding: 12px 0px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+.Nav-Corner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    /* background: #F0F2F5; */
+}
+
+.ProfileIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.image {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 200px;
+    border: 1.5px solid var(--shade-white, #FFF);
+    background: lightgray 0px -1.626px / 100% 125% no-repeat;
+    object-fit: cover;
+}
+
+.Search:focus {
+    outline: none;
+}
