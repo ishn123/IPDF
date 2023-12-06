@@ -3,6 +3,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 20px;
 }
 .main{
     min-height: 100vh;
@@ -10,7 +12,6 @@
 }
 .Questions-container{
     width: 95%;
-    min-height: 100vh;
     margin-top: 60px;
     padding: 10px;
     gap: 20px;
@@ -28,13 +29,16 @@
     color: #d6ebfd;
 }
 .AskQuestions{
-    width:65%;
+    width:60%;
     padding: 20px;
     background-color:#2d2d30;
     border-radius: 6px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+.Post-question:hover{
+    color:#929299;
 }
 .MyQuestions-header{
     font-size: 30px;
@@ -117,6 +121,18 @@
 .Genrative-button:hover{
 background-color: #b6dafb;
 }
+.Add-label{
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #81c4ff;
+    font-size: 15px;
+    cursor: pointer;
+    width: fit-content;
+}
+.Add-label:hover{
+    background-color: #b6dafb;
+    }
 .Genrative-AI{
     border-top: solid 0.5px white;
     border-bottom: solid 0.5px white;
@@ -148,6 +164,10 @@ background-color: #b6dafb;
     border: none;
     color: aliceblue;
     padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
     border-radius: 8px;
     background-color: #007acc;
     cursor: pointer;
@@ -164,11 +184,83 @@ background-color: #b6dafb;
     gap: 10px;
    
 }
+.Post-question{
+    color: aliceblue;
+    font-size: 20px;
+}
+.ProfileIcon {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+}
+.Post-header{
+    display: flex;
+    justify-content: space-between;
+
+}
+.image {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 1.5px solid var(--shade-white, #FFF);
+    background: lightgray 0px -1.626px / 100% 125% no-repeat;
+    object-fit: cover;
+}
+
+.label-container{
+    width: 80%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
 .Menu-item{
     width: 50px;
     background-color: red;
    height: 100%;
    position: fixed;
+}
+.Posts-container{
+    width: 95%;
+    padding: 10px;
+    flex-direction: column-reverse;
+    display: flex;
+    gap: 15px;
+}
+.No-questions{
+    background-color: #3e3e42;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #f0f8ff6b;
+    width: 100%;
+    height: 120px;
+}
+.Post{
+    width:60%;
+    padding: 20px;
+    background-color:#2d2d30de;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.upvote-downvote{
+    display: flex;
+     justify-content: space-between;
+    color: rgba(240, 248, 255, 0.708);
+}
+.MyQuestions-content-votes-container{
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+}
+.vote{
+    display: flex;
+    gap: 10px;
 }
 @media only screen and (max-width: 600px) {
     .Menu-item{
@@ -183,6 +275,9 @@ background-color: #b6dafb;
         display: none;
     }
     .AskQuestions{
+        width: 90%;
+    }
+    .Post{
         width: 90%;
     }
     .Genrative-button{
