@@ -285,4 +285,14 @@ background-color: #b6dafb;
         padding:20px;
         height: fit-content;
     }
+    .Posts-container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .Questions-container{
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
   }
