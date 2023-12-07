@@ -287,9 +287,14 @@ background-color: #b6dafb;
     .Post{
         width: 90%;
     }
+    .Genrative-AI{
+        flex-direction: column;
+        gap: 15px;
+    }
     .Genrative-button{
-        padding:20px;
         height: fit-content;
+        width: fit-content;
+        align-self: center;
     }
     .Posts-container{
         width: 100%;
