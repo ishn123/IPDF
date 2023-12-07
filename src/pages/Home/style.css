@@ -249,10 +249,15 @@ background-color: #b6dafb;
     flex-direction: column;
     gap: 20px;
 }
+.moment-post{
+    display: flex;
+    flex-direction: row-reverse;
+}
 .upvote-downvote{
     display: flex;
      justify-content: space-between;
     color: rgba(240, 248, 255, 0.708);
+    flex-direction: column;
 }
 .MyQuestions-content-votes-container{
     display: flex;

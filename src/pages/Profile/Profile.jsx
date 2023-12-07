@@ -145,7 +145,7 @@ function Profile() {
                                         </div>
                                         <div className='reply' >Reply: {cards[index].replies?.length}</div>
                                     </div>
-                                    <div>{moment(new Date(cards[index].createdAt)).fromNow()}</div>
+                                    <div className='moment-post'>{moment(new Date(cards[index].createdAt)).fromNow()}</div>
                                 </div>
                             </div>)
                         )

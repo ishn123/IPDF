@@ -279,7 +279,7 @@ function Question() {
                                 </div>
                                 <div className='reply' >Reply: {cards[id].replies?.length}</div>
                             </div>
-                            <div>{moment(new Date(cards[id].createdAt)).fromNow()}</div>
+                            <div className='moment-post'>{moment(new Date(cards[id].createdAt)).fromNow()}</div>
                         </div>
                     </div>
                     <div className='Reply-box'>
