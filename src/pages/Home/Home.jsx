@@ -155,7 +155,7 @@ function Home() {
             };
         }
     };
-
+    
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);

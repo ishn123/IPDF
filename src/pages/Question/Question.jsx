@@ -291,7 +291,7 @@ function Question() {
                         </button>
                     </div>
                     <div className="Replies-container">
-                        <h1>Replies</h1>
+                        <h1 style={{color:"aliceblue"}}>Replies</h1>
                         <div className="Replies-box">
                         {cards[id].replies?.length==0&&<div className="No-replies">No Replies</div>}
                             {

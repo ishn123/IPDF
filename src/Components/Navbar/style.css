@@ -103,6 +103,18 @@
     justify-content: center;
     align-items: center;
 }
+.Logout-icon{
+    width: 100%;
+    height: 100%;
+    color: aliceblue;
+}
+.logout{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .Notification-content{
     width: 90%;
     height: fit-content;

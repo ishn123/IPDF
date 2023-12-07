@@ -1,0 +1,80 @@
+.Profile-page{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.Profile-header{
+    width:100%;
+    margin-top: 60px;
+    border-bottom: solid 0.5px aliceblue;
+     padding-top: 20px;
+     padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    align-items: center;
+}
+.Profile-description{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
+    font-size: 15px;
+    color: aliceblue;
+}
+.Post1{
+    width:100%;
+    padding: 20px;
+    background-color:#2d2d30de;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.post-container-box{
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.Edit-button{
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: none;
+    background-color:#007acc;
+    color: aliceblue;
+}
+.image1 {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    border-radius: 200px;
+    border: 1.5px solid var(--shade-white, #FFF);
+    background: lightgray 0px-1.626px / 100% 125% no-repeat;
+    object-fit: cover;
+}
+.ProfileIcon1 {
+    display: flex;
+    width: 200px;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+}
+@media only screen and (max-width: 600px) {
+    .image1{
+        width: 80px;
+        height: 80px;
+    }
+    .ProfileIcon1{
+        width: 80px;
+        height: 80px;
+        padding-left: 10px;
+    }
+    .Profile-header{
+        gap: 30px;
+}
+}

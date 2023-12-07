@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./style.css"
 import { useNavigate } from 'react-router-dom'
+import { IoMdLogOut } from "react-icons/io";
 import moment from 'moment';
 function Navbar(props) {
     const navigate=useNavigate();
@@ -36,7 +37,13 @@ function Navbar(props) {
                         </div>
                     </div>
                     </div>
-                    <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' /></div>
+                   {props.logout!="logout"&&<div className="ProfileIcon" style={{ cursor: "pointer" }} onClick={()=>{navigate('/profile')}}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' /></div>
+                   } 
+                   {
+                    props.logout=="logout"&&<div className="logout" onClick={()=>{
+                        localStorage.removeItem("user");
+                        navigate('/signin');}}><IoMdLogOut className='Logout-icon'></IoMdLogOut></div>
+                   }
                 </div>
             </div>
         </div>

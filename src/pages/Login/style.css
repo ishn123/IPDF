@@ -1,24 +1,117 @@
-.Login{
-    background-color:#191a1b;
-    width: 100%;
-    height: 100vh;
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.twitter-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-.Signin{
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    background-color:rgb(102 104 106 / 26%);
+    width: fit-content;
+    margin: 5rem 0;
+    padding: 15px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.125);
-    width: 300px;
-    height: 400px;
+    background: #252526;
+    box-shadow: 14px 14px 30px #2c2c2c, -14px -14px 24px #2c2c2c;
+}
+
+.twitter-button {
     display: flex;
     align-items: center;
-    flex-direction: column;
-    gap: 20px;
+    border: 1px gray solid;
+    border-radius: 24px;
+    background-color: white;
+    padding: .5rem 4rem;
+    margin: 1rem 0;
 }
-h1{
-    color: whitesmoke;
+
+.twitter-button:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.twitter-button .img {
+    padding-right: 1rem;
+}
+
+.twitter-button p {
+    font-weight: bolder;
+}
+
+.img {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.twitter-form {
+    margin: 1rem 0;
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    flex-direction: column;
+}
+.Login-container{
+    width: 100%;
+    display: flex;
+    justify-content:center ;
+    align-items: center;
+    background-color: #1e1e1e;
+    height: 100vh;
+}
+
+
+.twitter-input {
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    background: #3e3e42;
+    color: aliceblue;
+}
+
+.twitter-input:focus {
+    outline: none;
+    border: 1px solid #1d9bf0;
+    cursor: pointer;
+}
+
+#next {
+    background-color: #007acc;
+    color: white;
+    border: 1px #007acc solid;
+    border-radius: 24px;
+    padding: .5rem 4rem;
+    font-weight: bold;
+}
+
+#next:hover {
+    cursor: pointer;
+}
+
+#forgot {
+    border: none;
+    border-radius: 24px;
+    padding: 0.5rem 4rem;
+    background: #6d6d74;
+    color: aliceblue;
+}
+
+#forgot:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+#signup {
+    color: gray;
+    font-size: 14px;
+}
+
+#signup a {
+    color: #1d9bf0;
+    text-decoration: none;
 }
