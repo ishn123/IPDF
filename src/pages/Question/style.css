@@ -164,6 +164,7 @@
     }
     .Reply-box{
         width: 90%;
+        flex-direction: column;
     }
     .AskQuestions{
         width: 90%;
