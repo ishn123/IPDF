@@ -119,7 +119,7 @@
 }
 .Replies-container{
     width: 60%;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 20px;

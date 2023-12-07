@@ -258,6 +258,7 @@ background-color: #b6dafb;
      justify-content: space-between;
     color: rgba(240, 248, 255, 0.708);
     flex-direction: column;
+    gap: 10px;
 }
 .MyQuestions-content-votes-container{
     display: flex;
