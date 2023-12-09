@@ -1,23 +1,61 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import './style.css'
 import { useNavigate } from 'react-router-dom';
+import { Toaster,toast } from 'react-hot-toast';
+import LoadingBar from 'react-top-loading-bar'
 function Login() {
     const navigate=useNavigate();
+    const ref = useRef(null);
     const [username, setUsername] = useState('');
     const [pass,setpass]=useState('');
     const handleInputChange = (e) => {
       setUsername(e.target.value);
     };
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
+        ref.current.continuousStart();
       e.preventDefault();
-      if(username=="abc@gmail.com"&&pass=="123456"){
-        localStorage.setItem("user","123456");
+      const UserData = {username:username,password:pass};
+    const res = await fetch("https://test-back-jeji.onrender.com/signin",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(UserData)
+    });
+    
+    if(res.status===201){
+      const data = await res.json();
+      ref.current.complete()
+      toast('User signed in successfully',
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+      localStorage.setItem("user",data);
         navigate('/home');
-      }
+      
+    }else{
+        toast.error('Email or Password is incorrect',
+        {
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+        );
+    }
     };
   
     return (
+        <>
+       <Toaster></Toaster>
+       <LoadingBar color='white' ref={ref} />
+
     <div className='Login-container'>
     <div className="twitter-container">
         <h1 style={{color:"aliceblue"}}>Query Me</h1>
@@ -63,6 +101,7 @@ function Login() {
         </p>
     </div>
     </div>
+    </>
     );
   
 }

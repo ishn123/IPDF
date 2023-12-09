@@ -1,15 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import "./style.css"
 import Navbar from '../../Components/Navbar/Navbar'
-import { FaArrowUp, FaArrowDown, FaPaperPlane } from "react-icons/fa"
+import { FaArrowUp, FaArrowDown, FaPaperPlane,FaMicrophone } from "react-icons/fa"
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import Chip from '@mui/material/Chip';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-
+import axios from 'axios';
+import OpenAI from "openai";
+import LoadingBar from 'react-top-loading-bar'
+import CodeMirror from "react-codemirror";
+import { VscRefresh } from "react-icons/vsc";
+import { Toaster,toast } from 'react-hot-toast';
+const openai = new OpenAI({apiKey:process.env.REACT_APP_API_KEY, dangerouslyAllowBrowser: true});
 function Home() {
     const navigate = useNavigate();
+    const ref = useRef(null);
     const animatedComponents = makeAnimated();
     const [question, setquestion] = useState("");
     const [genrate, setgenrate] = useState(true);
@@ -17,22 +24,24 @@ function Home() {
     const savednotifications = savednotificationsJSON ? JSON.parse(savednotificationsJSON) : [];
     const [notification, setnotification] = useState(savednotifications);
     const savedcardsJSON = localStorage.getItem("cards");
-  
     const savedcards = savedcardsJSON ? JSON.parse(savedcardsJSON) : [];
     const [cards, setcards] = useState(savedcards);
-    const [Ans, setAns] = useState("Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laudantium nisi totam maxime soluta, quod rem sequi, voluptate nam nihil ex molestias debitis! Dicta sequi maiores eveniet, nisi amet ad, commodi voluptas alias, ipsa quasi laudantium optio. Sequi ducimus cumque dignissimos. Vitae ipsam consequuntur molestias itaque? Maiores quibusdam doloribus officia dolorem, cumque alias illum. Fugiat ut hic, nam nemo molestiae provident similique nisi facilis unde culpa nostrum tenetur laboriosam fuga itaque sequi quis a quaerat repellat aspernatur, ipsa placeat minus! Placeat sunt ad, odio quod praesentium quas aliquam dolore excepturi quasi fuga, alias dignissimos repellat maxime? Repellat, consequatur? Dignissimos nemo quidem odio blanditiis excepturi quas laboriosam error amet pariatur dicta sapiente debitis ipsam architecto eveniet, aliquam quo. Nostrum vel beatae voluptatibus.")
+    const [Ans, setAns] = useState("");
+    const [mapans,setmapans]=useState([]);
     const [active, setactive] = useState(true);
     const handlepost = () => {
         if (question.trim() === "") {
-            alert("question required!!!!");
+            toast.error('Question cannot be empty',
+            {
+             
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            });
             return;
         }
-        // if (!genrate) {
-        //     setAns("Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laudantium nisi totam maxime soluta, quod rem sequi, voluptate nam nihil ex molestias debitis! Dicta sequi maiores eveniet, nisi amet ad, commodi voluptas alias, ipsa quasi laudantium optio. Sequi ducimus cumque dignissimos. Vitae ipsam consequuntur molestias itaque? Maiores quibusdam doloribus officia dolorem, cumque alias illum. Fugiat ut hic, nam nemo molestiae provident similique nisi facilis unde culpa nostrum tenetur laboriosam fuga itaque sequi quis a quaerat repellat aspernatur, ipsa placeat minus! Placeat sunt ad, odio quod praesentium quas aliquam dolore excepturi quasi fuga, alias dignissimos repellat maxime? Repellat, consequatur? Dignissimos nemo quidem odio blanditiis excepturi quas laboriosam error amet pariatur dicta sapiente debitis ipsam architecto eveniet, aliquam quo. Nostrum vel beatae voluptatibus.")
-        // }
-        // else {
-        //     setAns("");
-        // }
         
         const newpost = {
             id: Date.now() + Math.random() * 2,
@@ -55,7 +64,6 @@ function Home() {
         setgenrate(true);
         setnotification([...notification,{text:"You just posted a question",createdAt:Date.now()}]);
     }
-
     const handleupvote = (index) => {
         if(cards[index].isDownvoted == 0 && cards[index].isUpvoted == 0){
             setnotification([...notification,{text:"You just voted a question",createdAt:Date.now()}]);
@@ -66,7 +74,7 @@ function Home() {
                 id: cards[index].id,
                 title: cards[index].title,
                 labels: [...cards[index].labels],
-                answer: Ans,
+                answer: cards[index].answer,
                 replies: [...cards[index].replies],
                 votes: cards[index].votes + 1,
                 createdAt: cards[index].createdAt,
@@ -85,7 +93,7 @@ function Home() {
             id: cards[index].id,
             title: cards[index].title,
             labels: [...cards[index].labels],
-            answer: Ans,
+            answer:cards[index].answer,
             replies: [...cards[index].replies],
             votes: cards[index].votes + 1,
             createdAt: cards[index].createdAt,
@@ -105,7 +113,7 @@ function Home() {
                 id: cards[index].id,
                 title: cards[index].title,
                 labels: [...cards[index].labels],
-                answer: Ans,
+                answer: cards[index].answer,
                 replies: [...cards[index].replies],
                 votes: cards[index].votes - 1,
                 createdAt: cards[index].createdAt,
@@ -119,12 +127,13 @@ function Home() {
         if (cards[index].isDownvoted == 1 && cards[index].isUpvoted == 0){
             return;
      }
+
         const tempcards = [...cards];
         const newcard = {
             id: cards[index].id,
             title: cards[index].title,
             labels: [...cards[index].labels],
-            answer: Ans,
+            answer: cards[index].answer,
             replies: [...cards[index].replies],
             votes: cards[index].votes - 1,
             createdAt: cards[index].createdAt,
@@ -155,7 +164,111 @@ function Home() {
             };
         }
     };
+
+    const handlegenrate= async () => {
+       
+        if (question.trim() === ''){ 
+            toast.error('Question cannot be empty',
+            {
+             
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            });
+            return;}
+            ref.current.continuousStart();
+        try {
+          const completion = await openai.chat.completions.create({
+            messages: [{ role: "system", content: question }],
+            model: "gpt-3.5-turbo",
+          });
+         if(completion.choices[0].message.content!=null){
+            ref.current.complete();
+         }
+          setAns(completion.choices[0].message.content);
+          setgenrate(!genrate)
+        } catch (error) {
+          console.error('Error sending message:', error);
+        }
+      };
+      const handlerefresh=async()=>{
+        try {
+            const temp=question+Ans+"genrate another response";
+            const completion = await openai.chat.completions.create({
+              messages: [{ role: "system", content: temp }],
+              model: "gpt-3.5-turbo",
+            });
+           if(completion.choices[0].message.content!=null){
+              ref.current.complete();
+           }
+            setAns(completion.choices[0].message.content);
+          } catch (error) {
+            console.error('Error sending message:', error);
+          }
+      }
+      const [isListening, setIsListening] = useState(false);
+    //   useEffect(()=>{
+    //     const codeRegex = /```([\s\S]*?)```/g;
+    //     const codeSnippets = [];
+    //     let match;
+    //     while ((match = codeRegex.exec(Ans)) !== null) {
+    //       const codeSnippet = match[1];
+    //       codeSnippets.push(codeSnippet);
+    //     }
+    //     const textContent = Ans.replace(codeRegex, '&&8&&');
+    //     const textcont=textContent.split("&&8&&");
+    //     settext
+    //     console.log('Code Snippets:', codeSnippets);
+    //     console.log('Text Content:', textcont);
+    //   },[Ans]);
+    useEffect(() => {
+        let recognition;
     
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+        const startListening = () => {
+          recognition = new SpeechRecognition(); // for Webkit-based browsers
+          recognition.lang = 'en-US';
+    
+          recognition.onstart = () => {
+            setIsListening(true);
+          };
+    
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            setquestion(transcript);
+          };
+    
+          recognition.onend = () => {
+            setIsListening(false);
+          };
+    
+          recognition.onerror = (event) => {
+            console.error(event.error);
+            setIsListening(false);
+          };
+    
+          recognition.start();
+        };
+    
+        const stopListening = () => {
+          recognition.stop();
+          setIsListening(false);
+        };
+    
+        if (isListening) {
+          startListening();
+        }
+        }
+        return () => {
+          if (recognition) {
+            recognition.stop();
+          }
+        };
+      }, [isListening]);
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);
@@ -164,13 +277,26 @@ function Home() {
     }, [notification]);
     return (
         <div className='main'>
+            <Toaster></Toaster>
             <Navbar notification={notification}></Navbar>
+            <LoadingBar color='white' ref={ref} />
+
             {/* <div className='Menu-item'></div> */}
             <div className='Home'>
                 <div className='Questions-container'>
                     <div className='AskQuestions'>
                         <div className='AskQuestions-header'>Ask a Question</div>
-                        <input type="text" className='Input-text' value={question} placeholder='Write a question' onChange={(e) => setquestion(e.target.value)} />
+                        <div style={{    display: "flex",
+    /* justify-content: space-between; */
+    width: "100%",
+    gap: "10px"}}> <input type="text" className='Input-text' value={question} placeholder='Write a question' onChange={(e) => setquestion(e.target.value)} /> <div className="icon-container" onClick={() =>{ setIsListening(!isListening);}}> {!isListening ? <div className='Microphone'><FaMicrophone color='white'/></div>:<><div class="bar-c">
+    <div id="bar-1" class="bar"></div>
+    <div id="bar-2" class="bar"></div>
+    <div id="bar-3" class="bar"></div>
+    <div id="bar-4" class="bar"></div>
+    <div id="bar-5" class="bar"></div>
+    <div id="bar-6" class="bar"></div>
+  </div></>}</div></div> 
                         <div>
                             <Select
                                 closeMenuOnSelect={false}
@@ -197,16 +323,18 @@ function Home() {
 
                         <div className='Genrative-AI'>
                             {genrate && (<> <div className='Genrative-content'>Get genrative AI Solution for your problem</div>
-                                <button className="Genrative-button" onClick={() => setgenrate(!genrate)}>Generate</button>
+                                <button className="Genrative-button" onClick={handlegenrate}>Generate</button>
                             </>
                             )}
                             {!genrate && (
                                 <>
-                                    <div className='Answer-box' style={active ? { height: "100px" } : {}}>
+                                <div className='refresh-button' onClick={handlerefresh}><VscRefresh /></div>
+                                    <div className='Answer-box' style={active ? { height: "100px" ,  overflow: "hidden"} : {overflowX:"scroll"}}>
                                         <span style={{ fontSize: "20px" }}>Answer</span>
-                                        {Ans}
+                                       <pre>{Ans}</pre>
                                     </div>
                                     <div className='See-more' style={active ? {} : { display: "none" }} onClick={() => setactive(!active)}>See More...</div>
+                                    <div className='See-less' style={!active ? {} : { display: "none" }} onClick={() => setactive(!active)}>See Less...</div>
                                 </>
                             )
 
@@ -283,4 +411,4 @@ function Home() {
     )
 }
 
-export default Home
+export default Home;

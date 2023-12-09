@@ -262,14 +262,14 @@ function Question() {
                             {cards[id].title}
                         </div>
 
-                        <div className='Genrative-AI'>
-                            <div className='Answer-box' style={active ? { height: "100px" } : {}}>
+                       { cards[id].answer!=""&&<div className='Genrative-AI'>
+                            <div className='Answer-box' style={active ? { height: "100px" ,  overflow: "hidden"} : {overflowX:"scroll"}}>
                                 <span style={{ fontSize: "20px" }}>Answer</span>
-                                {cards[id].answer}
+                                <pre> {cards[id].answer}</pre>
                             </div>
                             <div className='See-more' style={active ? {} : { display: "none" }} onClick={() => setactive(!active)}>See More...</div>
-                            <div className='See-more' style={!active ? {} : { display: "none" }} onClick={() => setactive(!active)}>See Less...</div>
-                        </div>
+                            <div className='See-less' style={!active ? {} : { display: "none" }} onClick={() => setactive(!active)}>See Less...</div>
+                        </div>}
                         <div className='upvote-downvote'>
                             <div className='Vote-reply-container'>
                                 <div className='vote'>

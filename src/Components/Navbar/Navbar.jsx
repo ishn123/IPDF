@@ -10,8 +10,6 @@ function Navbar(props) {
     useEffect(()=>{
         setnotification(props.notification);
     });
-   
-    console.log(notification);
     return (
         <div className='Navbar'>
             <h1 style={{cursor:"pointer"}} onClick={()=>{navigate('/home')}}>Query Me</h1>
