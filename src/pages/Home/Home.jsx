@@ -7,10 +7,8 @@ import makeAnimated from 'react-select/animated';
 import Chip from '@mui/material/Chip';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import axios from 'axios';
 import OpenAI from "openai";
 import LoadingBar from 'react-top-loading-bar'
-import CodeMirror from "react-codemirror";
 import { VscRefresh } from "react-icons/vsc";
 import { Toaster,toast } from 'react-hot-toast';
 const openai = new OpenAI({apiKey:process.env.REACT_APP_API_KEY, dangerouslyAllowBrowser: true});
