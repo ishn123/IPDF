@@ -65,18 +65,44 @@
     justify-content: center;
     align-items: center;
 }
+.plus{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #f0f8ffa5;
+    font-size: 80px;
+}
+.updateinput{
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    background: #3e3e42;
+    color: aliceblue;
+
+}
+.Profile-description{
+    width: 30%;
+    gap: 10px;
+}
 @media only screen and (max-width: 600px) {
     .image1{
-        width: 80px;
-        height: 80px;
+        width: 120px;
+        height: 120px;
     }
     .ProfileIcon1{
-        width: 80px;
-        height: 80px;
-        padding-left: 10px;
+        width: 120px;
+        height: 120px;
+        /* padding-left: 10px; */
     }
     .Profile-header{
-        gap: 30px;
+        gap: 10px;
+        flex-direction: column;
+}
+.Profile-description{
+    justify-content: center;
+    align-items: center;
+    width: 80%;
 }
 .upvote-downvote{
     font-size: 15px;

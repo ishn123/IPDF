@@ -238,6 +238,8 @@ function Question() {
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);
+    const token=localStorage.getItem("user");
+    const tempuser=JSON.parse(token);
     useEffect(() => {
         localStorage.setItem("notifications", JSON.stringify(notification));
     }, [notification]);
@@ -249,7 +251,7 @@ function Question() {
                 <div className='Questions-container'>
                     <div className='Post'>
                         <div className='Post-header'>
-                            <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' />
+                            <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src={tempuser.img} alt="icon" className='image' />
 
                             </div>
                             <div className='label-container'>
@@ -300,7 +302,7 @@ function Question() {
                                     <div className='Replies-box-content'>
                                         
                                         <div className='Post-header'>
-                                            <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' />
+                                            <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src={tempuser.img} alt="icon" className='image' />
 
                                             </div>
                                             <div style={{ color: "rgba(240, 248, 255, 0.708)" }}>

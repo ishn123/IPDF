@@ -35,8 +35,19 @@ function Login() {
           color: '#fff',
         },
       });
-      localStorage.setItem("user",data);
+    
+      const newuser={
+        img:"https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",
+        id:data.userid._id,
+        name:data.userid.name,
+        email:data.userid.email,
+        password:data.userid.password,
+        bio:"The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela.",
+        occupation:"Student"
+      };
+      localStorage.setItem("user",JSON.stringify(newuser));
         navigate('/home');
+
       
     }else{
         toast.error('Email or Password is incorrect',

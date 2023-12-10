@@ -267,6 +267,8 @@ function Home() {
           }
         };
       }, [isListening]);
+      const token=localStorage.getItem("user");
+      const tempuser=JSON.parse(token);
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);
@@ -349,7 +351,7 @@ function Home() {
                         cards?.map((e, index) => (
                             <div className='Post'>
                                 <div className='Post-header'>
-                                    <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' />
+                                    <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src={tempuser.img} alt="icon" className='image' />
 
                                     </div>
                                     <div className='label-container'>

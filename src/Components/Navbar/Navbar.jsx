@@ -7,6 +7,8 @@ function Navbar(props) {
     const navigate=useNavigate();
     const [active,setactive]=useState(false);
     const [notification, setnotification] = useState();
+    const token=localStorage.getItem("user");
+    const tempuser=JSON.parse(token);
     useEffect(()=>{
         setnotification(props.notification);
     });
@@ -35,7 +37,7 @@ function Navbar(props) {
                         </div>
                     </div>
                     </div>
-                   {props.logout!="logout"&&<div className="ProfileIcon" style={{ cursor: "pointer" }} onClick={()=>{navigate('/profile')}}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' /></div>
+                   {props.logout!="logout"&&<div className="ProfileIcon" style={{ cursor: "pointer" }} onClick={()=>{navigate('/profile')}}><img src={tempuser.img} alt="icon" className='image' /></div>
                    } 
                    {
                     props.logout=="logout"&&<div className="logout" onClick={()=>{

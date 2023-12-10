@@ -9,7 +9,6 @@ import Signup from './pages/Signup/Signup';
 function App() {
   const location = useLocation();
   const token=localStorage.getItem("user");
-  
   return (
     <div className="App">
     <Routes location={location} key={location.pathname}>

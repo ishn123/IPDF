@@ -6,6 +6,7 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import Chip from '@mui/material/Chip';
 import { useNavigate } from 'react-router-dom';
+import { Toaster,toast } from 'react-hot-toast';
 import moment from 'moment';
 function Profile() {
     const savednotificationsJSON = localStorage.getItem("notifications");
@@ -94,28 +95,129 @@ function Profile() {
     };
     const savedcards = savedcardsJSON ? JSON.parse(savedcardsJSON) : [];
     const [cards, setcards] = useState(savedcards);
+    const token=localStorage.getItem("user");
+    const tempuser=JSON.parse(token);
+    const [userImg, setUserImg] = useState("");
+    function handleImageChange(e) {
+        const file = e.target.files[0];
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            if(fileReader.readyState === fileReader.DONE) {
+                setUserImg(fileReader.result)
+                console.log('img data', fileReader.result);
+            }
+        }
+    }
     useEffect(() => {
         localStorage.setItem("cards", JSON.stringify(cards));
     }, [cards]);
     useEffect(() => {
         localStorage.setItem("notifications", JSON.stringify(notification));
     }, [notification]);
+    const handleedit=()=>{
+        setedit(!edit);
+        // const newuser={
+        //     img:userImg,
+        //     name:tempuser.name,
+        //     email:tempuser.email,
+        //     password:tempuser.password,
+        //     bio:tempuser.bio,
+        //     occupation:tempuser.occupation
+        //   };
+        //   localStorage.setItem("user",JSON.stringify(newuser));
+    };
+    const [edit,setedit]=useState(false);
+    const [Name,setName]=useState("");
+    const [Email,setEmail]=useState("");
+    const [bio,setbio]=useState("");
+    const [occ,setocc]=useState("");
+    const [passwo,setpasswo]=useState("");
+    const updateUser = async(event)=>{
+        event.preventDefault();
+        const uid = localStorage.getItem("user");
+      
+
+        await fetch(`https://test-back-jeji.onrender.com/updateUser/${JSON.parse(uid).id}`,{
+          method:"PUT",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({username:Name!=""?Name:JSON.parse(uid).name,email:Email!=""?Email:JSON.parse(uid).email,password:passwo?passwo:JSON.parse(uid).password})
+        }).then((res)=>{
+            toast.success('User updated successfully',
+            {
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            }
+            );
+        }).catch((err)=>
+        toast.success('Server error',
+        {
+          style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+          },
+        }
+        )
+        )
+        const newuser={
+            img:userImg ? userImg :"https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",
+            id:JSON.parse(uid).id,
+            name:Name!=""?Name:JSON.parse(uid).name,
+            email:Email!=""?Email:JSON.parse(uid).email,
+            password:passwo?passwo:JSON.parse(uid).password,
+            bio:bio?bio:"The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela.",
+            occupation:occ?occ:"Student"
+          };
+          localStorage.setItem("user",JSON.stringify(newuser));
+      }
     return (
         <div className='main'>
+            <Toaster></Toaster>
             <Navbar notification={notification} logout={"logout"}></Navbar>
             <div className='Profile-page'>
                 <div className='Profile-header'>
-                    <div className="ProfileIcon1"><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image1' /></div>
-                    <div className='Profile-description'>
-                        <div style={{ fontSize: "25px" }}>Sanyam Sharma</div>
-                        <div style={{ color: "#f0f8ff57" }}><i>The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela.</i></div>
-                        <div style={{ fontSize: "18px" }}>Student</div>
+                    <div className="ProfileIcon1" style={{position:"relative"}}>
+                    <label htmlFor="inputImg" className="labelImg">
+                            <img className='image1' style={edit?{filter:"blur(2px)"}:{}} src={userImg ? userImg : tempuser.img}/>
+                          {edit&& <div className='plus' style={{position:"absolute"}}>+</div>}
+                        </label>
+                       { edit&& <input
+                            className="inputImg"
+                            id="inputImg"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                        />}
+                    </div>
+                   <div className='Profile-description'>
+                   {!edit &&<>   <div style={{ fontSize: "25px" }}>{tempuser.name}</div>
+                        <div style={{ color: "#f0f8ff57" }}><i>{tempuser.bio}</i></div>
+                        <div style={{ fontSize: "18px" }}>{tempuser.occupation}</div>
                         <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
                             <div style={{ display: "flex", flexDirection: "column-reverse", justifyContent: "center", alignItems: "center" }}>Posts <div style={
                                 { fontSize: "25px" }
                             }>{cards?.length}</div></div>
-                            <button className='Edit-button'>Edit Profile</button>
-                        </div>
+                            <button className='Edit-button' onClick={handleedit}>Edit Profile</button>
+                        </div></> }
+                        {
+                            edit&&<>
+                            <input type="text" className='updateinput' value={Name} onChange={(e)=>setName(e.target.value)} style={{width:"100%"}} placeholder='Name'/>
+                            <input type="text" className='updateinput' value={Email} onChange={(e)=>setEmail(e.target.value)} style={{width:"100%"}} placeholder='Email'/>
+                            <input type="text" className='updateinput' value={bio} onChange={(e)=>setbio(e.target.value)} style={{width:"100%"}} placeholder='Bio'/>
+                            <input type="text" className='updateinput' value={occ} onChange={(e)=>setocc(e.target.value)} style={{width:"100%"}} placeholder='Occupation'/>
+                            <input type="text" className='updateinput' value={passwo} onChange={(e)=>setpasswo(e.target.value)} style={{width:"100%"}} placeholder='password'/>
+                            <div style={{display:"flex",justifyContent:"space-around",width:"100%"}}>
+                            <button className='Edit-button' style={{backgroundColor:"red"}} >Delete Profile</button>
+                            <button className='Edit-button' onClick={updateUser}>Update Profile</button>
+                            </div>
+                            </>
+                        }
                     </div>
                 </div>
                 <div className='post-container-box'>
@@ -124,7 +226,7 @@ function Profile() {
                         cards?.map((e, index) => (
                             <div className='Post1'>
                                 <div className='Post-header'>
-                                    <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src="https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg" alt="icon" className='image' />
+                                    <div className="ProfileIcon" style={{ cursor: "pointer" }}><img src={tempuser.img} alt="icon" className='image' />
 
                                     </div>
                                     <div className='label-container'>
