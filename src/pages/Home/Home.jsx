@@ -6,7 +6,7 @@ import {
   FaArrowDown,
   FaPaperPlane,
   FaMicrophone,
-  FaSearch 
+  FaSearch,
 } from "react-icons/fa";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -17,36 +17,95 @@ import OpenAI from "openai";
 import LoadingBar from "react-top-loading-bar";
 import { FaImage } from "react-icons/fa6";
 import { VscRefresh } from "react-icons/vsc";
-import Tesseract from 'tesseract.js';
+import Tesseract from "tesseract.js";
 import { Toaster, toast } from "react-hot-toast";
+import Modal from "react-modal";
+import emailjs from "emailjs-com";
+const formatDate = (date) => {
+  const options = { day: "2-digit", month: "short", year: "numeric" };
+  return new Date(date).toLocaleDateString("en-US", options);
+};
+const generateRandomPassword = (length) => {
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let password = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset[randomIndex];
+  }
+
+  return password;
+};
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_API_KEY,
   dangerouslyAllowBrowser: true,
 });
+
 function Home() {
   const navigate = useNavigate();
   const ref = useRef(null);
-  const [searchact,setsearchact]=useState(false);
+
+  const [searchact, setsearchact] = useState(false);
   const animatedComponents = makeAnimated();
   const [question, setquestion] = useState("");
-  const [imgac,setimac]=useState(false);
+  const [imgac, setimac] = useState(false);
+  const [name, setname] = useState("");
   const [genrate, setgenrate] = useState(true);
   const savednotificationsJSON = localStorage.getItem("notifications");
   const savednotifications = savednotificationsJSON
     ? JSON.parse(savednotificationsJSON)
     : [];
+    const userJSON = localStorage.getItem("user");
+    const userJs = userJSON
+      ? JSON.parse(userJSON)
+      : [];
+    
   const [notification, setnotification] = useState(savednotifications);
   const [postImg, setPostImg] = useState(null);
-  function handleImageChange(e) {
-      const file = e.target.files[0];
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-          if(fileReader.readyState === fileReader.DONE) {
-              setPostImg(fileReader.result)
-              console.log('img data', fileReader.result);
-          }
-      }
+  const [pso, setpso] = useState(null);
+  const [is, setis] = useState(true);
+  const handlestat = () => {
+    if (is) {
+      setPostImg(pso);
+    }
+  };
+  async function handleImageChange(e) {
+    // const file = e.target.files[0];
+    // const fileReader = new FileReader();
+    // fileReader.readAsDataURL(file);
+    // fileReader.onload = () => {
+    //     if(fileReader.readyState === fileReader.DONE) {
+    //         setPostImg(fileReader.result)
+    //         console.log('img data', fileReader.result);
+    //     }
+    // }
+    setis(false);
+    e.preventDefault();
+
+    const file = e.target.files[0];
+    const formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", "lvib9r3j"); // Use your upload preset name here
+    formData.append("cloud_name", "dzmf1giby"); // Replace 'your_cloud_name' with your Cloudinary cloud name
+
+    ref.current.continuousStart();
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/dzmf1giby/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      setPostImg(data.secure_url); // Set the image URL to state
+      ref.current.complete();
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      ref.current.complete();
+    }
   }
   const savedcardsJSON = localStorage.getItem("cards");
   const savedcards = savedcardsJSON ? JSON.parse(savedcardsJSON) : [];
@@ -69,6 +128,7 @@ function Home() {
     const newpost = {
       id: Date.now() + Math.random() * 2,
       title: question,
+      postImg: postImg,
       labels: [...selectedOptions],
       answer: Ans,
       replies: [],
@@ -85,10 +145,15 @@ function Home() {
     setcards(temp);
     setquestion("");
     setgenrate(true);
+    setAns("");
     setnotification([
       ...notification,
       { text: "You just posted a question", createdAt: Date.now() },
     ]);
+    setpso(postImg);
+    setPostImg(null);
+    setis(true);
+    setSelectedOptions([]);
   };
   const handleupvote = (index) => {
     if (cards[index].isDownvoted == 0 && cards[index].isUpvoted == 0) {
@@ -102,6 +167,7 @@ function Home() {
       const newcard = {
         id: cards[index].id,
         title: cards[index].title,
+        postImg: cards[index].postImg,
         labels: [...cards[index].labels],
         answer: cards[index].answer,
         replies: [...cards[index].replies],
@@ -121,6 +187,7 @@ function Home() {
     const newcard = {
       id: cards[index].id,
       title: cards[index].title,
+      postImg: cards[index].postImg,
       labels: [...cards[index].labels],
       answer: cards[index].answer,
       replies: [...cards[index].replies],
@@ -144,6 +211,7 @@ function Home() {
       const newcard = {
         id: cards[index].id,
         title: cards[index].title,
+        postImg: cards[index].postImg,
         labels: [...cards[index].labels],
         answer: cards[index].answer,
         replies: [...cards[index].replies],
@@ -164,6 +232,7 @@ function Home() {
     const newcard = {
       id: cards[index].id,
       title: cards[index].title,
+      postImg: cards[index].postImg,
       labels: [...cards[index].labels],
       answer: cards[index].answer,
       replies: [...cards[index].replies],
@@ -238,34 +307,34 @@ function Home() {
       console.error("Error sending message:", error);
     }
   };
-  const [extractedText, setExtractedText] = useState('');
-  const newques =async (text)=>{
+  const [extractedText, setExtractedText] = useState("");
+  const newques = async (text) => {
     try {
-        const temp =text + "remove typo  ";
-        const completion = await openai.chat.completions.create({
-          messages: [{ role: "system", content: temp }],
-          model: "gpt-3.5-turbo",
-        });
-        if (completion.choices[0].message.content != null) {
-          ref.current.complete();
-        }
-        setquestion(completion.choices[0].message.content);
-      } catch (error) {
-        console.error("Error sending message:", error);
+      const temp = text + "remove typo  ";
+      const completion = await openai.chat.completions.create({
+        messages: [{ role: "system", content: temp }],
+        model: "gpt-3.5-turbo",
+      });
+      if (completion.choices[0].message.content != null) {
+        ref.current.complete();
       }
+      setquestion(completion.choices[0].message.content);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
   const extractTextFromImage = async () => {
-  if(postImg!==null){
-    Tesseract.recognize(
-      postImg,
-      'eng', // language code
-      { logger: (m) => console.log(m) } // optional logger
-    ).then(({ data: { text } }) => {
-      setExtractedText(text);
-      newques(text);
-    console.log(text);
-    });
-}
+    if (postImg !== null) {
+      Tesseract.recognize(
+        postImg,
+        "eng", // language code
+        { logger: (m) => console.log(m) } // optional logger
+      ).then(({ data: { text } }) => {
+        setExtractedText(text);
+        newques(text);
+        console.log(text);
+      });
+    }
   };
   const [isListening, setIsListening] = useState(false);
   //   useEffect(()=>{
@@ -337,16 +406,142 @@ function Home() {
   useEffect(() => {
     localStorage.setItem("notifications", JSON.stringify(notification));
   }, [notification]);
-  useEffect(()=>{
-    if(searchact)
-    setTimeout(()=>{setsearchact(false)},1000);
-  },[searchact]);
+  useEffect(() => {
+    if (searchact)
+      setTimeout(() => {
+        setsearchact(false);
+      }, 1000);
+  }, [searchact]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+  const [genpassword, setgenPassword] = useState("");
+  const [currentDate, setCurrentDate] = useState("");
+
+  useEffect(() => {
+    const currentDateFormatted = formatDate(new Date());
+    setCurrentDate(currentDateFormatted);
+  }, []);
+  const [isSending, setIsSending] = useState(false);
+  const handleSubmitDialog = () => {
+    setIsSending(true);
+    const generatedPassword = generateRandomPassword(10);
+    // Length of password: 10
+    localStorage.setItem("pass", generatedPassword);
+    ref.current.continuousStart();
+    const serviceId = "service_6vo282d";
+    const templateId = "template_ehn9iyv";
+    const userId = "Ms2qT4zrq9SKfEDKN";
+
+    emailjs
+      .send(
+        serviceId,
+        templateId,
+        {
+          name: name,
+          to_email: inputValue,
+          password: generatedPassword,
+          date: currentDate,
+        },
+        userId
+      )
+      .then((response) => {
+        console.log("Email sent successfully:", response.status, response.text);
+        // Clear email input and password after sending
+        setInputValue("");
+        setgenPassword("");
+        ref.current.complete();
+        setIsSending(false);
+      })
+      .catch((error) => {
+        console.error("Email sending failed:", error);
+        ref.current.complete();
+        setIsSending(false);
+      });
+    setIsDialogOpen(false);
+    setInputValue("");
+  };
+
+  const customStyles = {
+    overlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(45, 42, 42, 0.608)",
+      zIndex: 2,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+
+    content: {},
+  };
+  // const [toEmail, setToEmail] = useState('');
+
+  // const handleSendEmail = () => {
+
+  // };
   return (
     <div className="main">
       <Toaster></Toaster>
       <Navbar notification={notification}></Navbar>
       <LoadingBar color="white" ref={ref} />
-
+      <Modal
+        style={customStyles}
+        isOpen={isDialogOpen}
+        onRequestClose={handleCloseDialog}
+        className="formModal"
+        contentLabel="Dialog Box"
+      >
+        <h1>Are you a Professor?</h1>
+        <div style={{ fontSize: "12px" }}>
+          <strong>
+            Note: To Get access to upload video solution apply with your
+            teacher's id
+          </strong>
+        </div>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setname(e.target.value)}
+          placeholder="Enter your Name"
+          className="modal-input"
+        />
+        <input
+          type="email"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Enter your Email id"
+          className="modal-input"
+        />
+        <input
+          type="text"
+          // value={inputValue}
+          // onChange={handleInputChange}
+          placeholder="Enter your Teacher id"
+          className="modal-input"
+        />
+        <div className="button-container">
+          <button onClick={handleCloseDialog} className="cancel modbut">
+            Cancel
+          </button>
+          <button onClick={handleSubmitDialog} className="submit modbut">
+            Submit
+          </button>
+        </div>
+      </Modal>
       {/* <div className='Menu-item'></div> */}
       <div className="Home">
         <div className="Questions-container">
@@ -416,17 +611,21 @@ function Home() {
                 onChange={handleChange}
               />
             </div>
-             {postImg!==null&&<div className="colorBox">
-         
-             <img className='poimage ' src={postImg}/>
-             {searchact&&<div className="sc animate"></div>}
-             <div className="searchbutton" onClick={()=>{
-               setsearchact(true);
-               extractTextFromImage();
-             }}>
-             <FaSearch/> 
-             </div>
-             </div>}
+            {postImg !== null && (
+              <div className="colorBox">
+                <img className="poimage " src={postImg} />
+                {searchact && <div className="sc animate"></div>}
+                <div
+                  className="searchbutton"
+                  onClick={() => {
+                    setsearchact(true);
+                    extractTextFromImage();
+                  }}
+                >
+                  <FaSearch />
+                </div>
+              </div>
+            )}
             <div className="Genrative-AI">
               {genrate && (
                 <>
@@ -473,20 +672,21 @@ function Home() {
               )}
             </div>
             <div className="post-container">
-            <label className="addImg">
-            <input
-                            // className="inputImg"
-                            // id="inputImg"
-                            type="file"
-                        //    style={{visibility:"hidden"}}
-                            accept="image/*"
-                            hidden
-                            onChange={handleImageChange}
-                        />
+              <label className="addImg" onClick={() => handlestat()}>
+                <input
+                  // className="inputImg"
+                  // id="inputImg"
+                  type="file"
+                  //    style={{visibility:"hidden"}}
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    handleImageChange(e);
+                  }}
+                />
                 <FaImage />
-</label>
+              </label>
 
-              
               <button className="Create-post" onClick={handlepost}>
                 POST
                 <FaPaperPlane />
@@ -499,9 +699,11 @@ function Home() {
             cards?.map((e, index) => (
               <div className="Post">
                 <div className="Post-header">
-                  <div className="ProfileIcon" style={{ cursor: "pointer" }}>
+                  <div className="ProfileIcon" style={{ cursor: "pointer",position:"relative" }}>
                     <img src={tempuser.img} alt="icon" className="image" />
+                {userJs.occupation=="Teacher"&&<span class="goldBG goldText fix">Professor</span>}    
                   </div>
+                  
                   <div className="label-container">
                     {cards[index]?.labels?.map((e, i) => (
                       <Chip label={e.value} color="primary" />
@@ -515,6 +717,11 @@ function Home() {
                 >
                   {e.title}
                 </div>
+                {e.postImg !== null && (
+                  <div className="colorBox1">
+                    <img className="poimage " src={e.postImg} />
+                  </div>
+                )}
                 <div className="upvote-downvote">
                   <div className="Vote-reply-container">
                     <div className="vote">
@@ -546,6 +753,9 @@ function Home() {
             ))}
         </div>
       </div>
+      {userJs.occupation!=="Teacher"&&   <div className="Teaching" onClick={handleOpenDialog}>
+        Teaching ?
+      </div>}
       <div className="MyQuestionContainer">
         <div className="MyQuestions">
           <div className="MyQuestions-header">My Questions</div>

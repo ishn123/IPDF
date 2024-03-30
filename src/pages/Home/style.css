@@ -15,7 +15,7 @@
   height: 100%;
   width: -moz-fit-content;
   width: fit-content;
-  background-color: #3e3e42;
+  background-color: rgb(58, 58, 58);
   padding: 10px;
   border-radius: 10px;
   color: white;
@@ -179,6 +179,54 @@
    padding: 20px;
    flex-direction: column;
    align-items: center;
+}
+.formModal{
+  width: fit-content;
+  box-shadow: 0px 10px 15px 3px rgba(255, 255, 255, 0.237);
+  background-color: #f0f8ffe0;
+  height: fit-content;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 8px;
+  align-items: center;
+  gap: 15px;
+  border: none;
+  outline: none;
+}
+.goldBG{
+  background: linear-gradient(45deg, #AE8625, #F7EF8A, #D2AC47, #EDC967, #AE8625, #F7EF8A, #D2AC47, #EDC967,  #AE8625, #F7EF8A);
+  background-size: 400% 100%;
+  background-position: 0 0;
+}
+.fix{
+  position:absolute;
+  left: 40px;
+}
+.goldText{
+  background-clip: text;
+  color:transparent;
+  margin-left: 5px;
+  animation: AnimationName 10s linear infinite;
+}
+
+@keyframes AnimationName {
+  0%{background-position:0% 0%}
+  100%{background-position:100% 0%}
+}
+.Teaching{
+  position: fixed;
+  bottom: 20;
+  bottom: 20px;
+  right: 20px;
+  height: fit-content;
+  cursor: pointer;
+  width: fit-content;
+  background-color: #383a3bd5;
+  color: white;
+  padding: 12px;
+  border-radius: 2rem;
 }
 .Genrative-content{
     font-size: 18px;

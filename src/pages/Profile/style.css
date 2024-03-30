@@ -39,9 +39,13 @@
     justify-content: center;
     align-items: center;
 }
+.siz{
+    font-size: 18px;
+}
 .Edit-button{
     width: fit-content;
     height: fit-content;
+    cursor: pointer;
     padding: 10px;
     font-size: 15px;
     border-radius: 6px;
@@ -85,6 +89,37 @@
     width: 30%;
     gap: 10px;
 }
+.radio-toolbar input[type="radio"] {
+    display: none;
+  }
+  .radio-toolbar label {
+    display: inline-block;
+    background-color: #3e3e42;
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: #ffffff94;
+    cursor: pointer;
+  }
+  .radio-toolbar input[type="radio"]:checked+label {
+    background-color: #333;
+    color:#fff
+  }
+  .radio-toolbar input[type="radio"]+label:hover {
+    transition: transform .2s;
+    transform: scale(1.2);
+    color: white;
+  }
+  .nopass{
+  color: #035ef1;
+  font-size: 12px;
+  cursor: pointer;
+  }
+  .radio-toolbar{
+    display: flex;
+   gap: 20px;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 @media only screen and (max-width: 600px) {
     .image1{
         width: 120px;

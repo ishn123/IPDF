@@ -3,6 +3,24 @@
     width: 100%;
     color: aliceblue;
 }
+.summary-box{
+    width: 60%;
+    /* height: 200px; */
+    border-radius: 6px;
+    padding: 10px;
+    color: white;
+    background-color: #2d2d30de;
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center; */
+}
+.tfbut{
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
 .Home{
     width: 100%;
     display: flex;
@@ -171,9 +189,16 @@
     display: flex;
     gap: 10px;
 }
+.replb{
+    display: flex;
+    gap: 10px;
+}
 @media only screen and (max-width:1000px){
     .MyQuestions{
         display: none;
+    }
+    .summary-box{
+        width: 90%;
     }
     .Reply-box{
         width: 90%;
