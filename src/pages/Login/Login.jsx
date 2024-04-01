@@ -16,16 +16,17 @@ function Login() {
         ref.current.continuousStart();
       e.preventDefault();
       const UserData = {username:username,password:pass};
-    const res = await fetch("https://test-back-jeji.onrender.com/signin",{
+    const res = await fetch("http://localhost:8000/signin",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
       },
       body:JSON.stringify(UserData)
     });
-    
+    console.log(res);
     if(res.status===201){
-      const data = await res.json();
+      const {user:data} = await res.json();
+      console.log(data);
       ref.current.complete()
       toast('User signed in successfully',
       {
@@ -35,15 +36,15 @@ function Login() {
           color: '#fff',
         },
       });
-    
+      console.log(res);
       const newuser={
         img:"https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",
-        id:data.userid._id,
-        name:data.userid.name,
-        email:data.userid.email,
-        password:data.userid.password,
-        bio:"The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela.",
-        occupation:"Student"
+        id:data?._id,
+        name:data?.name,
+        email:data?.email,
+        password:data?.password,
+        bio:data?.bio,
+        occupation:data?.occupation
       };
       localStorage.setItem("user",JSON.stringify(newuser));
         navigate('/home');

@@ -3,7 +3,7 @@ import "./style.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { FaArrowUp, FaArrowDown, FaPaperPlane } from "react-icons/fa";
 import Chip from "@mui/material/Chip";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import Modal from "react-modal";
 import emailjs from "emailjs-com";
@@ -28,6 +28,8 @@ const generateRandomPassword = (length) => {
   return password;
 };
 function Question() {
+  const urlsearchParams = new URLSearchParams(useLocation().search);
+  
   const temp = [40, 10, 54, 56, 38, 90, 100, 89, 23, 4, 5, 6, 7, 8, 9];
   const savedcardsJSON = localStorage.getItem("cards");
   const savednotificationsJSON = localStorage.getItem("notifications");
@@ -37,6 +39,7 @@ function Question() {
   const userJSON = localStorage.getItem("user");
   const userJs = userJSON ? JSON.parse(userJSON) : [];
   const [notification, setnotification] = useState(savednotifications);
+  
   const { id } = useParams();
   const ref = useRef(null);
   const navigate = useNavigate();
@@ -45,7 +48,7 @@ function Question() {
   const [cards, setcards] = useState(savedcards);
   const [name, setname] = useState("");
   const [summary, setSummary] = useState("");
-  const handleupvote = (index) => {
+  const handleupvote = async(index) => {
     if (cards[index].isDownvoted == 0 && cards[index].isUpvoted == 0) {
       setnotification([
         ...notification,
@@ -55,7 +58,7 @@ function Question() {
     if (cards[index].isDownvoted == 1 && cards[index].isUpvoted == 1) {
       const tempcards = [...cards];
       const newcard = {
-        id: cards[index].id,
+        //id: cards[index].id,
         title: cards[index].title,
         postImg: cards[index].postImg,
         labels: [...cards[index].labels],
@@ -135,7 +138,7 @@ function Question() {
     setcards(tempcards);
   };
   const [reply, setreply] = useState("");
-  const handleReply = () => {
+  const handleReply = async() => {
     const newreply = {
       text: reply,
       vote: 0,
@@ -143,6 +146,7 @@ function Question() {
       isUpvoted: 0,
       isDownvoted: 0,
     };
+
     const tempcards = [...cards];
     const newcard = {
       id: cards[id].id,
@@ -154,6 +158,16 @@ function Question() {
       votes: cards[id].votes,
       createdAt: cards[id].createdAt,
     };
+    const res = await fetch(`http://localhost:8000/questions/${urlsearchParams.get("qid")}/replies`,{
+      method:"PUT",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({...newreply,user_id:JSON.parse(localStorage.getItem("user")).id})
+    })
+    .then((res)=>res.json());
+    console.log(res); // Reply
+   
     tempcards[id] = newcard;
     setcards(tempcards);
     setnotification([

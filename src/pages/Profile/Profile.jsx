@@ -182,21 +182,21 @@ function Profile() {
   };
   const updateUser = async (event) => {
     event.preventDefault();
-    const uid = localStorage.getItem("user");
+    const user = localStorage.getItem("user");
 
        if(Name||Email||passwo){
         ref.current.continuousStart();
     await fetch(
-      `https://test-back-jeji.onrender.com/updateUser/${JSON.parse(uid).id}`,
+      `http://localhost:8000/updateUser/${JSON.parse(user).id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: Name != "" ? Name : JSON.parse(uid).name,
-          email: Email != "" ? Email : JSON.parse(uid).email,
-          password: passwo ? passwo : JSON.parse(uid).password,
+          username: Name != "" ? Name : JSON.parse(user).name,
+          email: Email != "" ? Email : JSON.parse(user).email,
+          password: passwo ? passwo : JSON.parse(user).password,
         }),
       }
     )
@@ -224,10 +224,10 @@ function Profile() {
       img: userImg
         ? userImg
         : "https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",
-      id: JSON.parse(uid).id,
-      name: Name != "" ? Name : JSON.parse(uid).name,
-      email: Email != "" ? Email : JSON.parse(uid).email,
-      password: passwo ? passwo : JSON.parse(uid).password,
+      id: JSON.parse(user).id,
+      name: Name != "" ? Name : JSON.parse(user).name,
+      email: Email != "" ? Email : JSON.parse(user).email,
+      password: passwo ? passwo : JSON.parse(user).password,
       bio: bio
         ? bio
         : "The greatest glory in living lies not in never falling, but in rising every time we fall. - Nelson Mandela.",

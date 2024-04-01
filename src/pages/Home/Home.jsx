@@ -45,7 +45,7 @@ const openai = new OpenAI({
 function Home() {
   const navigate = useNavigate();
   const ref = useRef(null);
-
+  const urlsearchParams = new URLSearchParams();
   const [searchact, setsearchact] = useState(false);
   const animatedComponents = makeAnimated();
   const [question, setquestion] = useState("");
@@ -113,7 +113,7 @@ function Home() {
   const [Ans, setAns] = useState("");
   const [mapans, setmapans] = useState([]);
   const [active, setactive] = useState(true);
-  const handlepost = () => {
+  const handlepost = async() => {
     if (question.trim() === "") {
       toast.error("Question cannot be empty", {
         style: {
@@ -126,17 +126,29 @@ function Home() {
     }
 
     const newpost = {
-      id: Date.now() + Math.random() * 2,
+      //_id: Date.now() + Math.random() * 2,
       title: question,
       postImg: postImg,
       labels: [...selectedOptions],
       answer: Ans,
       replies: [],
       votes: 0,
-      createdAt: Date.now(),
       isUpvoted: 0,
       isDownvoted: 0,
+      user_id:JSON.parse(localStorage.getItem("user")).id,
+      createdAt:Date.now()
     };
+    const question_id = await fetch('http://localhost:8000/questions',{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(newpost)
+    }).then((res)=>res.json());
+    console.log(question_id);
+    newpost["_id"] = question_id?.question_id; 
+    //localStorage.setItem("QID",question_id?.question_id); // Setting the question id in local storage
+    console.log(newpost);
     let temp = [];
     if (cards != null) {
       temp = [...cards];
@@ -713,7 +725,7 @@ function Home() {
                 <div
                   className="Post-question"
                   style={{ cursor: "pointer" }}
-                  onClick={() => navigate(`/question/${index}`)}
+                  onClick={() => {urlsearchParams.set("qid",e?._id);navigate(`/question/${index}?`+urlsearchParams.toString())}}
                 >
                   {e.title}
                 </div>
@@ -769,7 +781,7 @@ function Home() {
                   <>
                     <div
                       className="MyQuestions-content-box"
-                      onClick={() => navigate(`/question/${i}`)}
+                      onClick={() => {urlsearchParams.set("qid",e?._id);navigate(`/question/${i}`+urlsearchParams.toString())}}
                     >
                       <div className="MyQuestions-content-title">
                         <span>{e.title}</span>?

@@ -15,15 +15,28 @@ function Signup() {
     const handleSubmit = async(e) => {
         ref.current.continuousStart();
       e.preventDefault();
-      const userData = {username:username,password:pass,email:email};
-      const res = await fetch("https://test-back-jeji.onrender.com/signup",{
+      const userData = {name:username,password:pass,email:email,image:"https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",bio:"...",occupation:"Student"};
+      const {user:data} = await fetch("http://localhost:8000/signup",{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
         },
         body:JSON.stringify(userData)
-      })
-      if(res.status===201){
+      }).then((res)=>res.json());
+
+      console.log(data);
+      const newuser={
+        img:"https://say-data-assignment.vercel.app/static/media/icon.fe59d9d7df33d043cf5a.jpg",
+        id:data?._id,
+        name:data?.name,
+        email:data?.email,
+        password:data?.password,
+        bio:data?.bio,
+        occupation:data?.occupation
+      };
+      localStorage.setItem("user",JSON.stringify(newuser));
+
+      if(data){
         ref.current.complete();
         toast('User created succesfully',
         {
